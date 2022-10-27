@@ -7,6 +7,7 @@ import WeatherCard from "./WeatherCard";
 const Main = () => {
   const [searchText, setSearchText] = useState([]);
   const [allCity, setAllCity] = useState([])
+  const [err, setErr] = useState("");
   let apiKey ="96d849954e75818e434c2040c99576c4";  
   let units = "metric";
   let lang = "tr";
@@ -22,6 +23,9 @@ const Main = () => {
        const  {data}  = await axios(url);
        setSearchText([...searchText,data]) 
        setAllCity([...allCity, city]) 
+       setErr("")
+     } else {
+      setErr("Aynı şehri iki defa girmeyiniz ve boş bırakmayınız")
      }
      
   }
@@ -30,7 +34,7 @@ const Main = () => {
       <form onSubmit={(e)=>handleSubmit(e)}>
         <input name="city" type="text" placeholder="Search for a city" autoFocus />
         <button type="submit">SUBMIT</button>
-        <span className="msg">error</span>
+        <span className="msg">{err}</span>
       </form>
       <div className="container">
         <ul className="cities">{/* use WeatherCard here */}
