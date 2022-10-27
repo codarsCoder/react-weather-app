@@ -25,7 +25,7 @@ const Main = () => {
        setAllCity([...allCity, city]) 
        setErr("")
      } else {
-      setErr("Aynı şehri iki defa girmeyiniz ve boş bırakmayınız")
+      setErr("Aynı şehri iki defa girmeyiniz ve boş bırakmayınız!")
      }
      
   }
