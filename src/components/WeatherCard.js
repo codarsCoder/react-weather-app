@@ -15,7 +15,7 @@ const WeatherCard = ( {wData} ) => {
       <figure>
         <img className="city-icon" src={iconUrl} alt={iconUrl} />
           <figcaption>{wData?.weather[0].description}</figcaption> 
-      </figure>
+      </figure> 
     </li>
   );
 };
