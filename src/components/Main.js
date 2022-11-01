@@ -7,7 +7,7 @@ const Main = () => {
   const [searchText, setSearchText] = useState("ankara");
   const [searchWeather, setSearchWeather] = useState([]);
  
-  let apiKey = process.env.REACT_APP_API_KEY;
+  let apiKey = "c47c1c44a39bf231725c0fbcc2670e7f" //process.env.REACT_APP_API_KEY;
   let units = "metric";
   let lang = "tr";
   
@@ -31,7 +31,7 @@ const Main = () => {
   console.log(searchWeather)
   const handleSubmit = (e) => {
     e.preventDefault();
-    searchText ? getError("Şehir ismini boş bıraktınız!") :  getWeather();
+    !searchText ? getError("Şehir ismini boş bıraktınız!") :  getWeather();
    
    
   }
