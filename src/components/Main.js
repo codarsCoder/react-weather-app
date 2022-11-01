@@ -1,55 +1,60 @@
 import axios from "axios";
-import React, { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import WeatherCard from "./WeatherCard";
 
-
 const Main = () => {
-  const [searchText, setSearchText] = useState([]);
-  const [allCity, setAllCity] = useState([])
-  const [err, setErr] = useState("");
-  let apiKey ="96d849954e75818e434c2040c99576c4";  
+  const [errorText, setErrorText] = useState("");
+  const [searchText, setSearchText] = useState("ankara");
+  const [searchWeather, setSearchWeather] = useState([]);
+ 
+  let apiKey = process.env.REACT_APP_API_KEY;
   let units = "metric";
   let lang = "tr";
- 
   
-
-  const handleSubmit = async(e)=> {
-      e.preventDefault();
-      let city =e.target.city.value;
-      console.log(allCity.includes(city))
-     if(city && !allCity.includes(city) ){
-       let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${units}&lang=${lang}`;
-       const  {data}  = await axios(url);
-       setSearchText([...searchText,data]) 
-       setAllCity([...allCity, city]) 
-       setErr("")
-     } else {
-      setErr("Aynı şehri iki defa girmeyiniz ve boş bırakmayınız!")
-     }
-     
+  
+  const getWeather = async() =>{
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${searchText}&appid=${apiKey}&units=${units}&lang=${lang}`;
+    const {data} = await axios(url);
+    const isExist = searchWeather.some((item)=> item.name.toLowerCase() === searchText.toLowerCase() );
+    if(isExist){
+        getError("Aynı şehir iki defa girildi!")
+    }else {
+      const {name , weather, main, sys } = data 
+      setSearchWeather([...searchWeather, {name, weather, main, sys} ])
+    }
+    
   }
+  const getError = (props)=> {
+    setErrorText(props);
+    setTimeout(()=>setErrorText(""),3000)
+  }
+  console.log(searchWeather)
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    searchText ? getError("Şehir ismini boş bıraktınız!") :  getWeather();
+   
+   
+  }
+  useEffect(() => {
+    getWeather();
+  }, [])
+  
   return (
+  
     <section className="main">
-      <form onSubmit={(e)=>handleSubmit(e)}>
-        <input name="city" type="text" placeholder="Search for a city" autoFocus />
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <input onChange={(e)=> setSearchText(e.target.value)} type="text" placeholder="Search for a city" autoFocus />
         <button type="submit">SUBMIT</button>
-        <span className="msg">{err}</span>
+        <span className="msg">{errorText}</span>
       </form>
       <div className="container">
-        <ul className="cities">{/* use WeatherCard here */}
-          {searchText?.map((item,i) =>{
-              return(
-                <div key={i}>
-                  <WeatherCard wData={item} /> 
-                </div>
-               
-              )
-        
-          })
-        }
-          
-        </ul>
+        <ul className="cities">
+          {searchWeather.map((item,i)=>{  
+            return (
+              <WeatherCard key={i} {...item}  />
+            )
+          })}
+          </ul>
       </div>
     </section>
   );
